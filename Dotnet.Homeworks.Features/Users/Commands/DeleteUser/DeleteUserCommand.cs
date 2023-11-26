@@ -1,8 +1,9 @@
-﻿using Dotnet.Homeworks.Infrastructure.Validation.RequestTypes;
+﻿using Dotnet.Homeworks.Infrastructure.Cqrs.Commands;
+using Dotnet.Homeworks.Infrastructure.Validation.RequestTypes;
 
 namespace Dotnet.Homeworks.Features.Users.Commands.DeleteUser;
 
-public class DeleteUserCommand : IClientRequest //TODO: Inherit certain interface 
+public class DeleteUserCommand : ICommand, IClientRequest
 {
     public Guid Guid { get; }
 

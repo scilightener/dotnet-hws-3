@@ -9,7 +9,8 @@ public static class ServiceCollectionExtensions
         Assembly assembly
     )
     {
-        throw new NotImplementedException();
+        PermissionCheck.RegisterCheckersFromAssembly(assembly);
+        serviceCollection.AddTransient<IPermissionCheck, PermissionCheck>();
     }
     
     public static void AddPermissionChecks(
@@ -17,6 +18,7 @@ public static class ServiceCollectionExtensions
         Assembly[] assemblies
     )
     {
-        throw new NotImplementedException();
+        PermissionCheck.RegisterCheckersFromAssembly(assemblies);
+        serviceCollection.AddTransient<IPermissionCheck, PermissionCheck>();
     }
 }
