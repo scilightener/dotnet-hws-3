@@ -17,4 +17,8 @@
       <ProjectReference Include="..\Dotnet.Homeworks.Shared\Dotnet.Homeworks.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Minio" Version="5.0.0" />
+    </ItemGroup>
+
 </Project>

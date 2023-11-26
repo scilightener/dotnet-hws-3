@@ -49,15 +49,36 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: "rbmquser"
       RABBITMQ_DEFAULT_PASS: "rbmqpass"
+      
+  dotnet_minio:
+    image: minio/minio:latest
+    hostname: minio
+    command: server --console-address ":9001" /data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: "mnuser"
+      MINIO_ROOT_PASSWORD: "mnpassword"
 
-#  dotnet_minio:
-#    image: minio/minio:latest
-#    
+  dotnet_storage:
+    image: dotnet-web
+    environment:
+      MinioConfig__Username: "mnuser"
+      MinioConfig__Password: "mnpassword"
+      MinioConfig__Endpoint: "minio"
+      MinioConfig__Port: 9000
+      MinioConfig__WithSsl: false
+    build:
+      context: .
+      dockerfile: Dotnet.Homeworks.Storage.API/Dockerfile
+    ports:
+      - "5102:80"
+    depends_on:
+      - dotnet_minio
+
 #  dotnet_mongodb:
 #    image: mongo:latest
 #    
 #  dotnet_jaeger:
 #    image: jaegertracing/all-in-one:latest
-#    
-#  dotnet_storage:
-#    image: dotnet-web
