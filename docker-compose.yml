@@ -4,6 +4,9 @@ services:
     image: dotnet-web
     environment:
       ConnectionStrings__Default: "Host=postgres;Username=userPostgres;Password=passwordPostgres;Database=dbPostgres"
+      RabbitMqConfig__Password: "rbmqpass"
+      RabbitMqConfig__Username: "rbmquser"
+      RabbitMqConfig__Hostname: "rabbitmq"
     build:
       context: .
       dockerfile: Dotnet.Homeworks.MainProject/Dockerfile
@@ -11,6 +14,7 @@ services:
       - "5100:80"
     depends_on:
       - dotnet_postgres
+      - dotnet_rabbitmq
 
   dotnet_postgres:
     image: postgres:alpine
@@ -20,9 +24,32 @@ services:
       POSTGRES_PASSWORD: passwordPostgres
       POSTGRES_DB: dbPostgres
 
-#  dotnet_rabbitmq:
-#    image: rabbitmq:3-alpine
-#    
+  dotnet_mailing:
+    image: dotnet-web
+    environment:
+      EmailConfig__Email: "some@mail.com"
+      EmailConfig__Host: "smtp.gmail.com"
+      EmailConfig__Port: 123
+      EmailConfig__Password: "somepassword"
+      RabbitMqConfig__Password: "rbmqpass"
+      RabbitMqConfig__Username: "rbmquser"
+      RabbitMqConfig__Hostname: "rabbitmq"
+    build:
+      context: .
+      dockerfile: Dotnet.Homeworks.Mailing.API/Dockerfile
+    ports:
+      - "5101:80"
+    depends_on:
+      - dotnet_rabbitmq
+  
+  dotnet_rabbitmq:
+    image: rabbitmq:3-alpine
+    hostname: rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: "rbmquser"
+      RABBITMQ_DEFAULT_PASS: "rbmqpass"
+
 #  dotnet_minio:
 #    image: minio/minio:latest
 #    
@@ -31,9 +58,6 @@ services:
 #    
 #  dotnet_jaeger:
 #    image: jaegertracing/all-in-one:latest
-#    
-#  dotnet_mailing:
-#    image: dotnet-web
 #    
 #  dotnet_storage:
 #    image: dotnet-web
